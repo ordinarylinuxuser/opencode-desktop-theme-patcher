@@ -21,6 +21,12 @@
     { key: "b-divider", label: "Turn divider", fallback: "#3d4350", block: true }
   ]
 
+  var LAYOUT_PREFIX = "oc-layout-"
+  var LAYOUT = [
+    { key: "timeline-width", label: "Chat column width", fallback: 60 },
+    { key: "prompt-width", label: "Prompt box width", fallback: 60 }
+  ]
+
   // Each preset gives six values plus a your-message fill; the rest are derived in derive().
   var PRESETS = {
     "Claude orange": { userFill: "#3a2d27", accent: "#d97757", text: "#f29a7a", border: "#3d3a36", strong: "#55514b", surface: "#1f1e1c", surface2: "#2a2825" },
@@ -45,6 +51,8 @@
   var root = document.documentElement
 
   function get(k) { return localStorage.getItem(PREFIX + k) }
+
+  function getLayout(k) { return localStorage.getItem(LAYOUT_PREFIX + k) }
 
   function hex(c) {
     return "#" + [0, 2, 4].map(function (i) {
@@ -91,6 +99,12 @@
       if (v) root.style.setProperty(name, v)
       else root.style.removeProperty(name)
     })
+    LAYOUT.forEach(function (l) {
+      var v = getLayout(l.key)
+      var name = "--oc-" + l.key
+      if (v) root.style.setProperty(name, v + "vw")
+      else root.style.removeProperty(name)
+    })
   }
 
   function mount() {
@@ -103,8 +117,9 @@
 
     var toggle = document.createElement("button")
     toggle.type = "button"
-    toggle.textContent = "Colors"
-    toggle.setAttribute("style", "padding:5px 12px;border-radius:999px;background:var(--background-base,#101010);border:1px solid rgba(127,127,127,.35);color:var(--text-base,#ccc);cursor:pointer;font:inherit")
+    toggle.title = "Theme patcher"
+    toggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H17c2.8 0 5-2.2 5-5 0-4.9-4.5-9-10-9z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor"/><circle cx="10.5" cy="6.5" r="1" fill="currentColor"/><circle cx="15" cy="7.5" r="1" fill="currentColor"/></svg>'
+    toggle.setAttribute("style", "padding:5px 9px;border-radius:999px;background:var(--background-base,#101010);border:1px solid rgba(127,127,127,.35);color:var(--text-base,#ccc);cursor:pointer;display:flex;align-items:center")
     toggle.addEventListener("click", function () {
       panel.style.display = panel.style.display === "none" ? "flex" : "none"
     })
@@ -150,6 +165,57 @@
       return h
     }
 
+    function section(text) {
+      var h = document.createElement("div")
+      h.textContent = text
+      h.setAttribute("style", "font-weight:700;font-size:13px;margin-top:2px")
+      return h
+    }
+
+    var layoutInputs = {}
+
+    function layoutRow(l) {
+      var r = document.createElement("div")
+      r.setAttribute("style", "display:flex;flex-direction:column;gap:2px")
+      var top = document.createElement("div")
+      top.setAttribute("style", "display:flex;justify-content:space-between;align-items:center;gap:6px")
+      var t = document.createElement("span")
+      t.textContent = l.label
+      var right = document.createElement("span")
+      right.setAttribute("style", "display:flex;align-items:center;gap:2px;flex:none")
+      var value = document.createElement("span")
+      value.setAttribute("style", "min-width:56px;text-align:right;opacity:.8")
+      var clear = document.createElement("button")
+      clear.type = "button"
+      clear.title = "Use app default"
+      clear.textContent = "×"
+      clear.setAttribute("style", "border:0;background:transparent;color:inherit;cursor:pointer;font:inherit;padding:0 4px;opacity:.7")
+      clear.addEventListener("click", function () {
+        localStorage.removeItem(LAYOUT_PREFIX + l.key)
+        apply()
+        paint()
+      })
+      var range = document.createElement("input")
+      range.type = "range"
+      range.min = "30"
+      range.max = "100"
+      range.step = "1"
+      range.setAttribute("style", "width:100%;margin:0;accent-color:var(--oc-accent,#d97757)")
+      range.addEventListener("input", function () {
+        localStorage.setItem(LAYOUT_PREFIX + l.key, range.value)
+        apply()
+        value.textContent = range.value + "%"
+      })
+      right.appendChild(value)
+      right.appendChild(clear)
+      top.appendChild(t)
+      top.appendChild(right)
+      r.appendChild(top)
+      r.appendChild(range)
+      layoutInputs[l.key] = { range: range, value: value }
+      return r
+    }
+
     var presetSelect = document.createElement("select")
     presetSelect.setAttribute("style", "width:100%;padding:4px;border-radius:6px;background:#1f232b;color:#eee;border:1px solid rgba(127,127,127,.35);font:inherit;color-scheme:dark")
     var placeholder = document.createElement("option")
@@ -174,6 +240,9 @@
       presetSelect.value = ""
     })
 
+    var resetStyle = "margin-top:6px;border:1px solid rgba(127,127,127,.35);border-radius:6px;background:transparent;color:inherit;cursor:pointer;padding:4px 8px;font:inherit"
+
+    panel.appendChild(section("Colors"))
     panel.appendChild(presetSelect)
     panel.appendChild(heading("Base colors"))
     COLORS.filter(function (c) { return c.base }).forEach(function (c) { panel.appendChild(row(c)) })
@@ -183,7 +252,7 @@
     var reset = document.createElement("button")
     reset.type = "button"
     reset.textContent = "Reset all"
-    reset.setAttribute("style", "margin-top:6px;border:1px solid rgba(127,127,127,.35);border-radius:6px;background:transparent;color:inherit;cursor:pointer;padding:4px 8px;font:inherit")
+    reset.setAttribute("style", resetStyle)
     reset.addEventListener("click", function () {
       COLORS.forEach(function (c) { localStorage.removeItem(PREFIX + c.key) })
       apply()
@@ -191,9 +260,32 @@
     })
     panel.appendChild(reset)
 
+    var divider = document.createElement("div")
+    divider.setAttribute("style", "height:1px;background:rgba(127,127,127,.35);margin:8px 0 4px")
+    panel.appendChild(divider)
+
+    panel.appendChild(section("Layout"))
+    LAYOUT.forEach(function (l) { panel.appendChild(layoutRow(l)) })
+
+    var resetLayout = document.createElement("button")
+    resetLayout.type = "button"
+    resetLayout.textContent = "Reset layout"
+    resetLayout.setAttribute("style", resetStyle)
+    resetLayout.addEventListener("click", function () {
+      LAYOUT.forEach(function (l) { localStorage.removeItem(LAYOUT_PREFIX + l.key) })
+      apply()
+      paint()
+    })
+    panel.appendChild(resetLayout)
+
     function paint() {
       COLORS.forEach(function (c) {
         inputs[c.key].value = get(c.key) || c.fallback
+      })
+      LAYOUT.forEach(function (l) {
+        var v = getLayout(l.key)
+        layoutInputs[l.key].range.value = v || l.fallback
+        layoutInputs[l.key].value.textContent = v ? v + "%" : "Default"
       })
     }
 

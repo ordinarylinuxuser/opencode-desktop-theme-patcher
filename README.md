@@ -4,6 +4,19 @@ Patches the Linux **OpenCode Desktop** app with a bordered, Claude Code-style ch
 
 > Unofficial. This is not affiliated with or endorsed by the OpenCode project. It modifies the installed app bundle, so use it at your own risk.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/patcher-full-window.png" width="800" alt="OpenCode Desktop with the theme patcher panel open">
+</p>
+
+<table align="center">
+  <tr>
+    <td align="center"><img src="screenshots/patcher-preset-menu.png" width="300" alt="Preset menu open in the Colors section"><br><sub>Preset menu open</sub></td>
+    <td align="center"><img src="screenshots/patcher-panel-sections.png" width="300" alt="Colors and Layout sections of the panel"><br><sub>Colors and Layout sections</sub></td>
+  </tr>
+</table>
+
 ## What it changes
 
 - **Markdown blocks:** code blocks, tables, blockquotes, inline code, headings and horizontal rules get clear borders, rounded corners and accent colors.
@@ -11,12 +24,17 @@ Patches the Linux **OpenCode Desktop** app with a bordered, Claude Code-style ch
 - **Your messages:** a tinted bubble with its own border and fill.
 - **Tool calls and permission prompts:** bordered cards with a tinted header.
 - **Turn dividers:** a line between chat turns.
-- **Colors panel:** a floating **Colors** button (bottom-right) with:
-  - 17 presets, including Dracula, Nord, Catppuccin Mocha, Tokyo Night, Gruvbox Dark, One Dark, Solarized Dark, Monokai, Rosé Pine, Everforest, Kanagawa, Night Owl, GitHub Dark, Ayu Mirage, Material Palenight, Synthwave and Claude orange.
-  - A color picker for every element: accent, accent text, base border, surfaces, heading underline, your message fill and border, quote fill, inline code fill, and the border of each block type.
-  - Per-color reset (`×`) and a **Reset all** button.
+- **Theme patcher panel:** a floating palette icon button (bottom-right) opens a panel with two sections:
+  - **Colors**
+    - 17 presets, including Dracula, Nord, Catppuccin Mocha, Tokyo Night, Gruvbox Dark, One Dark, Solarized Dark, Monokai, Rosé Pine, Everforest, Kanagawa, Night Owl, GitHub Dark, Ayu Mirage, Material Palenight, Synthwave and Claude orange.
+    - A color picker for every element: accent, accent text, base border, surfaces, heading underline, your message fill and border, quote fill, inline code fill, and the border of each block type.
+    - Per-color reset (`×`) and a **Reset all** button.
+  - **Layout**
+    - **Chat column width:** a slider (30–100% of the window width) for the column that holds the chat turns.
+    - **Prompt box width:** a slider (30–100% of the window width) for the box where you type your questions.
+    - Per-slider reset (`×`) returns to the app's default, and a **Reset layout** button resets both.
 
-Colors are saved in the app's local storage, so they persist between launches.
+Colors and layout are saved in the app's local storage, so they persist between launches. Sliders only take effect on wide windows (48rem and up), where the app already limits the column width.
 
 ## Requirements
 
@@ -33,6 +51,7 @@ git clone https://github.com/ordinarylinuxuser/opencode-desktop-theme-patcher.gi
 cd opencode-desktop-theme-patcher
 ./patch-desktop.sh            # builds /tmp/opencode/app.asar.new, does not install
 ./patch-desktop.sh --install  # builds and installs over /usr/lib/opencode-desktop/app.asar (needs sudo)
+./patch-desktop.sh --uninstall # restores the original app.asar and removes the saved state (needs sudo)
 ```
 
 Then restart OpenCode Desktop and open the **Colors** panel.
@@ -51,14 +70,20 @@ Package updates overwrite `app.asar`. Run the script again with `--install` to r
 
 The stylesheet uses CSS variables such as `--oc-accent`, `--oc-b-user` and `--oc-f-user`. The panel sets these on the root element, so every block updates at once.
 
-## Restoring the original app
+## Uninstalling
+
+```bash
+./patch-desktop.sh --uninstall
+```
+
+This copies the saved pristine `app.asar` back over `/usr/lib/opencode-desktop/app.asar` and deletes `~/.local/share/opencode-desktop-theme/`. Restart OpenCode Desktop afterward. If the pristine copy is missing, reinstall the package.
+
+Manual equivalent:
 
 ```bash
 sudo cp ~/.local/share/opencode-desktop-theme/app.asar.orig /usr/lib/opencode-desktop/app.asar
-rm -f ~/.local/share/opencode-desktop-theme/installed.sha256
+rm -rf ~/.local/share/opencode-desktop-theme
 ```
-
-Restart OpenCode Desktop afterward. If the pristine copy is missing, reinstall the package.
 
 ## Files
 

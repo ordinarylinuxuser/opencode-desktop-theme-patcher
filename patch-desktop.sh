@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # Patches the OpenCode desktop app: bordered chat blocks, tool/permission cards, and an in-app accent switcher.
-# Usage: patch-desktop.sh [--install]
+# Usage: patch-desktop.sh [--install | --uninstall]
 # The default accent is orange; users change colors with the Colors panel bottom-right.
 # Without --install the patched bundle is only built to /tmp/opencode/app.asar.new.
+# --uninstall restores the pristine app.asar and removes the saved state.
 # Re-run after every opencode-desktop update: a new app.asar is detected and saved as the pristine copy.
 set -euo pipefail
 
 INSTALL=""
-for arg in "$@"; do [ "$arg" = "--install" ] && INSTALL="--install"; done
+UNINSTALL=""
+for arg in "$@"; do
+  [ "$arg" = "--install" ] && INSTALL="--install"
+  [ "$arg" = "--uninstall" ] && UNINSTALL="--uninstall"
+done
 DEFAULT_ACCENT="#d97757"
 SRC_ASAR=/usr/lib/opencode-desktop/app.asar
 DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -17,6 +22,16 @@ STATE="$STATE_DIR/installed.sha256"
 WORK=/tmp/opencode/build
 OUT=/tmp/opencode/app.asar.new
 
+if [ "$UNINSTALL" = "--uninstall" ]; then
+  if [ ! -f "$ORIG" ]; then
+    echo "No pristine copy at $ORIG. Reinstall the OpenCode Desktop package to restore app.asar." >&2
+    exit 1
+  fi
+  sudo cp "$ORIG" "$SRC_ASAR"
+  rm -rf "$STATE_DIR"
+  echo "Restored original app.asar to $SRC_ASAR and removed $STATE_DIR. Restart OpenCode desktop to see the change."
+  exit 0
+fi
 
 mkdir -p "$STATE_DIR" /tmp/opencode
 current_sha="$(sha256sum "$SRC_ASAR" | cut -d' ' -f1)"

@@ -43,3 +43,7 @@
 [data-component=dock-prompt][data-kind=permission]{border-inline-start:3px solid var(--oc-accent)}
 [data-component=dock-prompt] [data-slot=permission-body]{padding:12px 14px 14px}
 :root body [data-component=user-message] [data-slot=user-message-text]{background:var(--oc-f-user)}
+@media (width>=48rem){
+[data-slot=session-timeline-scroll] .md\:max-w-session{max-width:var(--oc-timeline-width,var(--container-session))}
+[data-component=session-composer-dock]>div{max-width:var(--oc-prompt-width,var(--container-session))}
+}
