@@ -29,7 +29,7 @@ Colors are saved in the app's local storage, so they persist between launches.
 Clone the repo and run the script from its folder:
 
 ```bash
-git clone https://github.com/<your-user>/opencode-desktop-theme-patcher.git
+git clone https://github.com/ordinarylinuxuser/opencode-desktop-theme-patcher.git
 cd opencode-desktop-theme-patcher
 ./patch-desktop.sh            # builds /tmp/opencode/app.asar.new, does not install
 ./patch-desktop.sh --install  # builds and installs over /usr/lib/opencode-desktop/app.asar (needs sudo)
