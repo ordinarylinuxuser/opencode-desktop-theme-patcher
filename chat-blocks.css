@@ -1,0 +1,45 @@
+/* oc-chat-blocks: bordered chat blocks. --oc-accent and the --oc-b-* border colors are set by patch-desktop.sh and the in-app picker. */
+:root{--oc-radius:8px;--oc-border:var(--v2-border-border-base);--oc-border-strong:color-mix(in oklch,var(--oc-border),#fff 16%);--oc-surface:var(--v2-background-bg-layer-01);--oc-surface-2:var(--v2-background-bg-layer-02);--oc-accent-text:color-mix(in oklch,var(--oc-accent),#fff 25%);--oc-b-assistant:var(--oc-border-strong);--oc-b-user:color-mix(in oklch,var(--oc-accent) 45%,var(--oc-border));--oc-b-code:var(--oc-border-strong);--oc-b-table:var(--oc-border-strong);--oc-b-quote:var(--oc-border-strong);--oc-b-tool:var(--oc-border-strong);--oc-b-prompt:var(--oc-border-strong);--oc-b-divider:var(--oc-border-strong);--oc-b-heading:color-mix(in oklch,var(--oc-accent) 35%,var(--oc-border));--oc-f-user:color-mix(in oklch,var(--oc-accent) 8%,var(--oc-surface));--oc-f-quote:color-mix(in oklch,var(--oc-accent) 6%,var(--oc-surface));--oc-f-code:color-mix(in oklch,var(--oc-accent) 12%,transparent);--oc-rail:var(--oc-accent)}
+[data-component=markdown] p{margin-bottom:10px}
+[data-component=markdown] h1{font-size:18px;margin-top:28px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--oc-b-heading)}
+[data-component=markdown] h2{font-size:16px;margin-top:24px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--oc-b-heading)}
+[data-component=markdown] h3{color:var(--oc-accent-text);margin-top:20px;margin-bottom:8px}
+[data-component=markdown] h4,[data-component=markdown] h5,[data-component=markdown] h6{color:var(--v2-text-text-muted);margin-top:16px;margin-bottom:6px}
+[data-component=markdown] a{color:var(--oc-accent-text);text-decoration:underline;text-decoration-color:color-mix(in oklch,var(--oc-accent) 45%,transparent);text-underline-offset:3px}
+[data-component=markdown] a:hover{text-decoration-color:var(--oc-accent-text)}
+[data-component=markdown] ul,[data-component=markdown] ol{padding-inline-start:24px}
+[data-component=markdown] li{margin-bottom:4px}
+[data-component=markdown] li::marker{color:var(--oc-accent)}
+[data-component=markdown] input[type=checkbox]{accent-color:var(--oc-accent)}
+[data-component=markdown] blockquote{border:1px solid var(--oc-b-quote);border-inline-start:3px solid var(--oc-accent);border-radius:var(--oc-radius);background:var(--oc-f-quote);padding:10px 14px;margin:12px 0;color:var(--v2-text-text-base)}
+[data-component=markdown] blockquote blockquote{margin:8px 0 0}
+[data-component=markdown] hr{border:0;height:1px;background:var(--oc-b-divider);margin:20px 0}
+[data-component=markdown] :not(pre)>code{background:var(--oc-f-code);color:var(--oc-accent-text);border:1px solid color-mix(in oklch,var(--oc-accent) 25%,transparent);border-radius:5px;padding:1px 5px}
+[data-component=markdown] [data-component=markdown-code]{border:1px solid var(--oc-b-code);border-radius:var(--oc-radius);background:var(--oc-surface);overflow:hidden;margin:12px 0}
+[data-component=markdown] [data-component=markdown-code] pre{margin:0 !important;padding:12px 14px;border:0;border-radius:0;background:transparent !important}
+[data-component=markdown] [data-slot=markdown-copy-button]{top:6px;inset-inline-end:6px}
+[data-component=markdown] [data-component=markdown-table]{border:1px solid var(--oc-b-table);border-radius:var(--oc-radius);background:var(--oc-surface);box-shadow:none;padding:0;margin:12px 0;overflow:hidden}
+[data-component=markdown] tbody{background:transparent;box-shadow:none;border-radius:0}
+[data-component=markdown] th{background:var(--oc-surface-2);border-bottom:1px solid var(--oc-b-table);color:var(--v2-text-text-muted);font-size:12px;font-weight:600;padding:8px 12px}
+[data-component=markdown] td{padding:8px 12px}
+[data-component=markdown] tbody tr:not(:last-child) td{border-bottom:1px solid var(--oc-border)}
+[data-component=markdown] tbody tr:first-child td:first-child,[data-component=markdown] tbody tr:first-child td:last-child,[data-component=markdown] tbody tr:last-child td:first-child,[data-component=markdown] tbody tr:last-child td:last-child{border-radius:0}
+[data-component=markdown] img{border:1px solid var(--oc-border-strong);border-radius:var(--oc-radius);margin:12px 0}
+[data-component=user-message] [data-slot=user-message-body]{border:1px solid var(--oc-b-user);border-radius:var(--oc-radius);background:var(--oc-f-user)}
+[data-component=text-part]{margin-block:10px !important;border:1px solid var(--oc-b-assistant);border-radius:var(--oc-radius);background:var(--oc-surface);padding:12px 14px;border-inline-start:3px solid var(--oc-rail)}
+[data-component=session-turn]+[data-component=session-turn]{border-top:1px solid var(--oc-b-divider);margin-top:20px;padding-top:20px}
+[data-component=tool-part-wrapper]{margin:8px 0}
+[data-component=collapsible].tool-collapsible{border:1px solid var(--oc-b-tool);border-radius:var(--oc-radius);background:var(--oc-surface);overflow:hidden}
+[data-component=collapsible].tool-collapsible>[data-slot=collapsible-trigger]{padding:8px 12px;background:var(--oc-surface-2);border-bottom:1px solid transparent}
+[data-component=collapsible].tool-collapsible[data-expanded]>[data-slot=collapsible-trigger],[data-component=collapsible].tool-collapsible:has([data-slot=collapsible-content][data-expanded])>[data-slot=collapsible-trigger]{border-bottom-color:var(--oc-b-tool)}
+[data-component=collapsible].tool-collapsible>[data-slot=collapsible-content]{padding:10px 12px}
+[data-component=collapsible].tool-collapsible:not([data-rail=false])>[data-slot=collapsible-content]{padding-inline-start:12px}
+[data-component=tool-trigger] [data-slot=basic-tool-tool-title]{color:var(--oc-accent-text)}
+[data-component=read-tool-group]{border:1px solid var(--oc-b-tool);border-radius:var(--oc-radius);background:var(--oc-surface-2);padding:4px 10px;min-height:0;margin:8px 0}
+[data-component=read-tool-group][data-expanded=true]{padding-block:8px}
+[data-component=task-tool-card]{border:1px solid var(--oc-b-tool);border-inline-start:3px solid var(--oc-accent);border-radius:var(--oc-radius);background:var(--oc-surface);padding:10px 12px}
+[data-component=task-tool-card]:hover,[data-component=task-tool-card]:focus-visible{border-color:var(--oc-accent)}
+[data-component=dock-prompt]{border:1px solid var(--oc-b-prompt);border-radius:var(--oc-radius);box-shadow:none}
+[data-component=dock-prompt][data-kind=permission]{border-inline-start:3px solid var(--oc-accent)}
+[data-component=dock-prompt] [data-slot=permission-body]{padding:12px 14px 14px}
+:root body [data-component=user-message] [data-slot=user-message-text]{background:var(--oc-f-user)}
