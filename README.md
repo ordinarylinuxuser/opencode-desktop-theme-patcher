@@ -76,4 +76,4 @@ Restart OpenCode Desktop afterward. If the pristine copy is missing, reinstall t
 
 ## License
 
-No license has been chosen yet.
+MIT. See [LICENSE](LICENSE).
